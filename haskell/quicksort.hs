@@ -1,9 +1,9 @@
 quickSort :: (Ord a) => [a] -> [a]
 quickSort [] = []
-quickSort (x : xs) =
-  let left = quickSort [a | a <- xs, a <= x]
-      right = quickSort [a | a <- xs, a > x]
-   in left ++ [x] ++ right
+quickSort (p : xs) = quickSort lesser ++ [p] ++ quickSort greater
+  where
+    lesser = filter (< p) xs
+    greater = filter (>= p) xs
 
 main :: IO ()
 main = do
