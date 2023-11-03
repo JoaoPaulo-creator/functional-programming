@@ -1,14 +1,20 @@
+import Data.Time.Calendar.Easter (gregorianEaster)
+
 quickSort :: (Ord a) => [a] -> [a]
 quickSort [] = []
-quickSort (p : xs) = quickSort lesser ++ [p] ++ quickSort greater
+quickSort (x : xs) = quickSort lesser ++ equal ++ quickSort greater
   where
-    lesser = filter (< p) xs
-    greater = filter (>= p) xs
+    (lesser, equal, greater) = part x xs ([], [x], [])
+
+part :: (Ord a) => a -> [a] -> ([a], [a], [a]) -> ([a], [a], [a])
+part _ [] (l, e, g) = (l, e, g)
+part p (x : xs) (l, e, g)
+  | x > p = part p xs (l, e, x : g)
+  | x < p = part p xs (x : l, e, g)
+  | otherwise = part p xs (l, x : e, g)
 
 main :: IO ()
 main = do
-  putStrLn "Enter a list of numbers separated by spaces: "
-  input <- getLine
-  let numbers = map read (words input) :: [Int]
-  let sortedNumbers = quickSort numbers
-  putStrLn ("The sorted list id: " ++ show sortedNumbers)
+  let unsortedList = [5, 3, 8, 1, 2, 6, 7, 4]
+  let sortedList = quickSort unsortedList
+  print sortedList
